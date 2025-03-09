@@ -1,6 +1,6 @@
 HOME = "/workspace"
 POS_DB_PATH = HOME+"/human_examples"                  # Your original audio files
-NEG_DB_PATH = HOME+"/deezer-detector/temp_fake"      # Temporary path for restructured files
+NEG_DB_PATH = HOME+"/deezer-detector/fma_rebuilt"      # Temporary path for restructured files
 CODEC_DB_PATH = HOME+"/deezer-detector/fma_codec/"    # For codec-altered versions
 WEIGHTS_PATH = HOME+"/deezer-detector/weights"        # Model checkpoints
 RESULT_PATH = HOME+"/deezer-detector/results"         # Evaluation results
