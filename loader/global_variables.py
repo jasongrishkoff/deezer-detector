@@ -1,8 +1,9 @@
-HOME = "/xxx/yyy"
-POS_DB_PATH = HOME+"/fma_real_medium/resampled"
-NEG_DB_PATH = HOME+"/fma_rebuilt_medium"
-CODEC_DB_PATH = HOME+"/fma_codec/
-WEIGHTS_PATH = HOME+"/deepfake/weights/final"
-RESULT_PATH = HOME+"/deepfake/results/final"
-SPLIT_PATH = HOME+"/deepfake/data/dataset_medium_split.npy"
-CONF_PATH = HOME+"/deepfake/conf"
+HOME = "/workspace"
+POS_DB_PATH = HOME+"/human_examples"                  # Your original audio files
+NEG_DB_PATH = HOME+"/deezer-detector/temp_fake"      # Temporary path for restructured files
+CODEC_DB_PATH = HOME+"/deezer-detector/fma_codec/"    # For codec-altered versions
+WEIGHTS_PATH = HOME+"/deezer-detector/weights"        # Model checkpoints
+RESULT_PATH = HOME+"/deezer-detector/results"         # Evaluation results
+SPLIT_PATH = HOME+"/deezer-detector/data/dataset_split.npy"  # Train/val/test split
+BR_PATH = HOME+"/deezer-detector/data/bitrates.npy"   # Bitrate information
+CONF_PATH = HOME+"/deezer-detector/conf"              # Config files

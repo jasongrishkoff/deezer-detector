@@ -1,3 +1,4 @@
+import numpy as np
 """
 Generate Griffin-Mel reconstructions for a sample of audio files
 """

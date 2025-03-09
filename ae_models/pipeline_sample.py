@@ -142,7 +142,7 @@ class SamplePipeline:
                             audio_rebuilt,
                             sample_rate = self.conf["SR"],
                             channels_first = True,
-                            compression = audio_br,
+                            format="mp3", 
                             )
 
                     self.clock("saved")
