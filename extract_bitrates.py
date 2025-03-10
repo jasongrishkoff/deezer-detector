@@ -1,7 +1,4 @@
-"""
-Extract bitrates from MP3 files and save to a numpy file
-"""
-
+import concurrent.futures
 import os
 import sys
 import numpy as np
@@ -9,7 +6,7 @@ from glob import glob
 import subprocess
 from tqdm import tqdm
 
-# Add the parent directory to the path to import global_variables
+# Import paths
 sys.path.append(os.path.join(os.getcwd()))
 from loader.global_variables import *
 
@@ -27,28 +24,19 @@ def get_mp3_bitrate(filename):
         result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         
         if result.stdout.strip():
-            # Convert bit/s to kbit/s
             return int(result.stdout.strip()) // 1000
         else:
-            # If ffprobe couldn't determine the bitrate
             return 320  # Default to 320 kbps
     except Exception as e:
         print(f"Error getting bitrate for {filename}: {e}")
         return 320
 
-def extract_bitrates(sample_files=None):
-    """
-    Extract bitrates from MP3 files and save to a numpy file
-    
-    Args:
-        sample_files: List of files to process. If None, process all files in POS_DB_PATH
-    """
+def extract_bitrates(sample_files=None, workers=16):
+    """Extract bitrates in parallel"""
     print("Extracting bitrates from MP3 files")
     
-    # Inside extract_bitrates.py
     if os.path.exists(SPLIT_PATH):
         split_dict = np.load(SPLIT_PATH, allow_pickle=True).item()
-        # Get only the filenames in the split
         sample_files = []
         for key in split_dict:
             sample_files.extend([os.path.join(POS_DB_PATH, f) for f in split_dict[key]])
@@ -56,13 +44,17 @@ def extract_bitrates(sample_files=None):
     else:
         files = glob(os.path.join(POS_DB_PATH, '**/*.mp3'), recursive=True)
     
-    print(f"Processing {len(files)} files")
+    print(f"Processing {len(files)} files with {workers} workers")
     
-    # Extract bitrates
+    # Process in parallel
     bitrates = {}
-    for file in tqdm(files):
-        filename = os.path.basename(file)
-        bitrates[filename] = get_mp3_bitrate(file)
+    with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
+        future_to_file = {executor.submit(get_mp3_bitrate, file): file for file in files}
+        
+        for future in tqdm(concurrent.futures.as_completed(future_to_file), total=len(files)):
+            file = future_to_file[future]
+            filename = os.path.basename(file)
+            bitrates[filename] = future.result()
     
     # Save bitrates
     os.makedirs(os.path.dirname(BR_PATH), exist_ok=True)
